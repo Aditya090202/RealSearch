@@ -3,13 +3,14 @@ from markupsafe import escape
 from googleAPI import get_webtags
 from reddit import parse
 from buddy import summarize_user_advice, create_html_links
+from format import formatter
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def hello_world():
-    return render_template('index.html')
+    return render_template('index2.html')
 
 
 @app.route("/test")
@@ -29,9 +30,9 @@ def query():
             urls.append(tag["link"])
 
         print(urls[:2])
-        ret_string, ret_comments = parse(urls, 1)
+        ret_post = parse(urls, 1)
 
-        print(ret_string)
-        summed_text = summarize_user_advice(ret_string)
+        output_string = formatter(ret_post, query)
+        summed_text = summarize_user_advice(output_string)
         print(summed_text)
-        return create_html_links(summed_text)
+        return create_html_links(summed_text, ret_post)
